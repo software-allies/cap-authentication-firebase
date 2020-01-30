@@ -1,8 +1,10 @@
 {
   "name": "cap-authentication-firebase",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
-    "@angular/core": "^8.2.14"
+    "@angular/core": "^8.2.14",
+    "@angular/fire": "^5.2.1",
+    "firebase": "^7.2.3"
   }
 }
