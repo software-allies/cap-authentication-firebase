@@ -53,7 +53,7 @@ export class AppModule { }
 
 ## Installation
 ```
-npm i cap-authorization
+npm i cap-authentication-firebase
 ```
 ---
 
