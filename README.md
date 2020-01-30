@@ -68,7 +68,9 @@ into the import section
 ```
 @NgModule({
   imports: [
+    ...
     AuthenticationModule,
+    ...
   ],
 })
 export class AppModule { }
