@@ -1,10 +1,26 @@
 {
   "name": "cap-authentication-firebase",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "Angular module to authenticate users in your application using Firebase-Authentication; CAP extension",
+  "author": {
+    "email": "lenin_emmanuel@hotmail.com",
+    "name": "Lenin Emmanuel Espinoza",
+    "url": "https://github.com/leninEmmanuel"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "authentication",
+    "firebase",
+    "angular/fire",
+    "firebase"
+  ],
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",
     "@angular/fire": "^5.2.1",
-    "firebase": "^7.2.3"
-  }
+    "firebase": "^7.2.3",
+    "bootstrap": "^4.4.1"
+  },
+  "license": "MIT"
 }
