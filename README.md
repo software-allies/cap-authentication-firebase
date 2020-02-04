@@ -1,4 +1,4 @@
-# CAP AUTHENTICATION [![Generic badge](https://img.shields.io/badge/CAP-Active-<COLOR>.svg)](https://shields.io/)
+# CAP AUTHENTICATION FIREBASE [![Generic badge](https://img.shields.io/badge/CAP-Active-<COLOR>.svg)](https://shields.io/)
 
 **CAP AUTHENTICATION** is a module for **Angular**
 
