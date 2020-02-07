@@ -57,11 +57,11 @@ npm i cap-authentication-firebase
 ```
 ---
 
-### **Implementation into a module**
+## Implementation into a module
 
 To use this module go-to the app module and into the sections' import and put the Authentication Module.
 ```
-import { AuthenticationModule } from 'cap-authorization'
+import { AuthenticationModule } from 'cap-authentication-firebase'
 ```
 ---
 into the import section
@@ -77,29 +77,29 @@ export class AppModule { }
 ```
 ---
 
-### **HTML tags**
+## HTML tags
 
-* #### **Authentication LogIn**
+*  **Authentication LogIn**
 ```
 <cap-log-in-firebase></cap-log-in-firebase>
 ```
 ---
-* #### **Authentication Register**
+*  **Authentication Register**
 ```
 <cap-register-firebase></cap-register-firebase>
 ```
 ---
-* #### **Authentication Profile**
+*  **Authentication Profile**
 ```
 <cap-profile-firebase></cap-profile-firebase>
 ```
 ---
-* #### **Authentication Forgot Password**
+*  **Authentication Forgot Password**
 ```
 <cap-change-password-firebase></cap-change-password-firebase>
 ```
 ---
-* #### **Authentication Log Out**
+*  **Authentication Log Out**
 ```
 <cap-log-out-firebase></cap-log-out-firebase>
 ```
