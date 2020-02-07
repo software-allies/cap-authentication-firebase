@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/software-allies/cap-authentication-firebase"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",
     "@angular/fire": "^5.2.1",
