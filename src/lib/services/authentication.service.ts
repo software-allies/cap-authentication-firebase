@@ -2,6 +2,7 @@ import { Injectable, Inject, PLATFORM_ID} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable()
@@ -72,6 +73,20 @@ export class AuthenticationService {
 
   verifyEmail(): Promise<void> {
     return this.afAuth.auth.currentUser.sendEmailVerification();
+  }
+
+  isUserLoggedIn(): boolean | void {
+    if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
+      let userStorage = JSON.parse(localStorage.getItem('User'));
+      const helper = new JwtHelperService();
+      if (!helper.isTokenExpired(userStorage.token)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 }

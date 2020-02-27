@@ -118,7 +118,7 @@ import { Router } from '@angular/router';
 `],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class AuthEditComponent implements OnInit{
+export class AuthProfileComponent implements OnInit {
 
   profileUserForm: FormGroup;
   userUpdated: boolean;
