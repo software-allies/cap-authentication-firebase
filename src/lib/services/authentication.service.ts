@@ -2,7 +2,6 @@ import { Injectable, Inject, PLATFORM_ID} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable()
@@ -78,8 +77,7 @@ export class AuthenticationService {
   isUserLoggedIn(): boolean | void {
     if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
       let userStorage = JSON.parse(localStorage.getItem('User'));
-      const helper = new JwtHelperService();
-      if (!helper.isTokenExpired(userStorage.token)) {
+      if (this.afAuth.auth.currentUser && userStorage) {
         return true;
       } else {
         return false;
