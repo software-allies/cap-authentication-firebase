@@ -1,6 +1,6 @@
 {
   "name": "cap-authentication-firebase",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Angular module to authenticate users in your application using Firebase-Authentication; CAP extension",
   "author": {
     "email": "lenin_emmanuel@hotmail.com",
