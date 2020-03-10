@@ -154,7 +154,8 @@ export class AuthLoginComponent implements OnInit{
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: res.token
+            token: res.token,
+            exp: Date.parse(res.expirationTime)
           });
           this.router.navigate(['/']);
         });
@@ -172,12 +173,11 @@ export class AuthLoginComponent implements OnInit{
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: res.token
+            token: res.token,
+            exp: Date.parse(res.expirationTime)
           });
-        }).then(() => {
-          this.router.navigate(['/']);
         });
-      }).catch(error => this.userNotValid = true);
+      }).catch(() => this.userNotValid = true);
     } else {
       this.authenticationService.authWithGoogle().then((response: any) =>  {
         response.user.getIdTokenResult().then((res: any) => {
@@ -185,13 +185,12 @@ export class AuthLoginComponent implements OnInit{
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: res.token
+            token: res.token,
+            exp: Date.parse(res.expirationTime)
           });
-        }).then(() => {
-          this.router.navigate(['/']);
         });
-      }).catch(error => this.userNotValid = true);
+      }).catch(() => this.userNotValid = true);
     }
+    !this.userNotValid ? this.router.navigate(['/']) : false;
   }
-
 }

@@ -211,12 +211,13 @@ export class AuthRegisterComponent implements OnInit {
                 user: response.user.email.split('@', 1)[0],
                 email: response.user.email,
                 refresh_token: response.user.refreshToken,
-                token: res.token
+                token: res.token,
+                exp: Date.parse(res.expirationTime)
               });
             }).then(() => {
-              response.user.sendEmailVerification().then((res: any) => this.router.navigate(['/']));
+              response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
             });
-        }).catch(error => this.existingUser = true);
+        }).catch(() => this.existingUser = true);
     } else {
       this.validatedForm = true;
     }
@@ -231,12 +232,11 @@ export class AuthRegisterComponent implements OnInit {
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: res.token
+            token: res.token,
+            exp: Date.parse(res.expirationTime)
           });
-        }).then(() => {
-          this.router.navigate(['/']);
         });
-      }).catch(error => this.existingUser = true);
+      }).catch(() => this.existingUser = true);
     } else {
       this.authenticationService.authWithGoogle().then((response: any) => {
         response.user.getIdTokenResult().then((res: any) => {
@@ -244,13 +244,12 @@ export class AuthRegisterComponent implements OnInit {
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: res.token
+            token: res.token,
+            exp: Date.parse(res.expirationTime)
           });
-        }).then(() => {
-          this.router.navigate(['/']);
         });
-      }).catch(error => this.existingUser = true);
+      }).catch(() => this.existingUser = true);
     }
+    !this.existingUser ? this.router.navigate(['/']) : false;
   }
-
 }
