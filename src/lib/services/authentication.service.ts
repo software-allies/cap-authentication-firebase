@@ -2,6 +2,7 @@ import { Injectable, Inject, PLATFORM_ID} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
+import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class AuthenticationService {
 
   constructor(
     private afAuth: AngularFireAuth,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId,
   ) {
     this.user = this.afAuth.authState;
@@ -38,6 +40,7 @@ export class AuthenticationService {
         localStorage.removeItem('User');
       }
     }
+    this.router.navigate(['/']);
     return this.afAuth.auth.signOut();
   }
 
@@ -66,8 +69,8 @@ export class AuthenticationService {
     })
     : Promise.resolve()
 
-  changePassword(user: any): Promise<void> {
-    return this.afAuth.auth.sendPasswordResetEmail(user.email);
+  changePassword(email: any): Promise<void> {
+    return this.afAuth.auth.sendPasswordResetEmail(email);
   }
 
   verifyEmail(): Promise<void> {
@@ -76,15 +79,15 @@ export class AuthenticationService {
 
   isUserLoggedIn(): boolean | void {
     if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
-      let userStorage = JSON.parse(localStorage.getItem('User'));
-      if (this.afAuth.auth.currentUser && userStorage) {
+      const userStorage = JSON.parse(localStorage.getItem('User'));
+      if (userStorage.exp > Date.now()) {
         return true;
       } else {
+        this.signOut();
         return false;
       }
     } else {
       return false;
     }
   }
-
 }
