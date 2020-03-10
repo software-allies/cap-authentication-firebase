@@ -12,49 +12,63 @@ import { Router } from '@angular/router';
         <p>Profile</p>
     </div>
     <div class="form-content" *ngIf="user">
-      <form [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
-        <div class="row">
-          <div class="col-md-6 mb-4">
+      <div class="row">
+        <div class="col-md-6 mb-4">
+        <form [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
 
-            <div class="form-group" >
-              <small class="form-text">
-                Full name
-              </small>
-              <input  type="text" class="form-control" placeholder="Full name *" formControlName="displayName"
-                      [ngClass]="{
-                        'invalidField':(!profileUserForm.get('displayName').valid)
-                        || (validatedForm && !profileUserForm.get('displayName').valid)
-                      }"
-              />
-              <small *ngIf="!profileUserForm.get('displayName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
-                Required field
-              </small>
-            </div>
-            <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
-                user updated successfully
-            </div>
-            <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
-                Error updating information, try again later
-            </div>
-            <button type="submit"
-                    class="btnSubmit">
-                    Edit Profile
-            </button>
+          <div class="form-group" >
+            <small class="form-text">
+              Full name
+            </small>
+            <input  type="text" class="form-control" placeholder="Full name *" formControlName="displayName"
+                    [ngClass]="{
+                      'invalidField':(!profileUserForm.get('displayName').valid)
+                      || (validatedForm && !profileUserForm.get('displayName').valid)
+                    }"
+            />
+            <small *ngIf="!profileUserForm.get('displayName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+              Required field
+            </small>
           </div>
-          <div class="col-md-6">
-            <div class="ml-5">
-              <p> Email : {{user.email}}</p>
-              <p> Full name: {{user.displayName}}</p>
-              <p> Authentication Method: {{user.providerData[0].providerId}} </p>
-              <p> UID User: {{user.providerData[0].uid}} </p>
-              <p *ngIf="user.emailVerified"> Verified Email : Yes</p>
-              <p *ngIf="!user.emailVerified"> Verified Email : No</p>
-              <p> Creation Date: {{user.metadata.creationTime | date:'medium'}}</p>
-              <p> Last SignIn : {{user.metadata.lastSignInTime | date:'medium'}}</p>
-            </div>
+          <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
+              user updated successfully
+          </div>
+          <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
+              Error updating information, try again later
+          </div>
+          <button type="submit"
+                  class="btnSubmit">
+                  Edit Profile
+          </button>
+          </form>
+
+          <button
+            (click)="changePassword(user.email)"
+            type="submit"
+            class="btnSubmit mt-3">
+            Change Password
+          </button>
+          <label *ngIf="passwordUpdated" class="col-12  text-center col-form-label">
+            An e-mail was sent to your email address that you provided, there you can change your password.
+          </label>
+            <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
+              an error occurred with the server when checking your email, try again later
+          </label>
+
+        </div>
+        <div class="col-md-6">
+          <div class="ml-5">
+            <p> Email : {{user.email}}</p>
+            <p> Full name: {{user.displayName}}</p>
+            <p> Authentication Method: {{user.providerData[0].providerId}} </p>
+            <p> UID User: {{user.providerData[0].uid}} </p>
+            <p *ngIf="user.emailVerified"> Verified Email : Yes</p>
+            <p *ngIf="!user.emailVerified"> Verified Email : No</p>
+            <p> Creation Date: {{user.metadata.creationTime | date:'medium'}}</p>
+            <p> Last SignIn : {{user.metadata.lastSignInTime | date:'medium'}}</p>
           </div>
         </div>
-      </form>
+      </div>
     </div>
     <div *ngIf="verifiedUser">
       <div class="form-content">
@@ -128,6 +142,8 @@ export class AuthProfileComponent implements OnInit {
   emailSend: boolean;
   errorEmailSend: boolean;
   validatedForm: boolean;
+  passwordUpdated: boolean;
+  passwordUpdatedError: boolean;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -139,6 +155,8 @@ export class AuthProfileComponent implements OnInit {
     this.emailSend = false;
     this.errorEmailSend = false;
     this.validatedForm = false;
+    this.passwordUpdated = false;
+    this.passwordUpdatedError = false;
   }
 
   ngOnInit() {
@@ -188,5 +206,11 @@ export class AuthProfileComponent implements OnInit {
     } else {
       this.validatedForm = true;
     }
+  }
+
+  changePassword(email: string) {
+    this.authenticationService.changePassword(email).then(() => {
+      this.passwordUpdated = true;
+    }).catch(() => this.passwordUpdatedError = true);
   }
 }
