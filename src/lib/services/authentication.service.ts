@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
+import { StateService } from './state.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable()
@@ -13,7 +14,8 @@ export class AuthenticationService {
   constructor(
     private afAuth: AngularFireAuth,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId,
+    private stateService: StateService,
+    @Inject(PLATFORM_ID) private platformId
   ) {
     this.user = this.afAuth.authState;
   }
@@ -38,6 +40,7 @@ export class AuthenticationService {
     if (isPlatformBrowser(this.platformId)) {
       if (localStorage.getItem('User')) {
         localStorage.removeItem('User');
+        this.stateService.setState('isLogged', false);
       }
     }
     this.router.navigate(['/']);
@@ -48,6 +51,7 @@ export class AuthenticationService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('User', JSON.stringify(user));
     }
+    this.stateService.setState('isLogged', true);
   }
 
   authWithFacebook(): Promise<firebase.auth.UserCredential> {
