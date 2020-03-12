@@ -5,6 +5,9 @@ import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
 import { StateService } from './state.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { ConfigService } from './config.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,9 +18,12 @@ export class AuthenticationService {
     private afAuth: AngularFireAuth,
     private router: Router,
     private stateService: StateService,
+    private configService: ConfigService,
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId
   ) {
     this.user = this.afAuth.authState;
+    this.stateService.setState('isLogged', this.isUserLoggedIn());
   }
 
   get authenticated(): boolean {
@@ -92,6 +98,31 @@ export class AuthenticationService {
       }
     } else {
       return false;
+    }
+  }
+
+  createUserDB(user: any, token: string, authId: string) {
+    if (this.configService.endPoint) {
+      const userData = {
+        SACAP__UUID__c: uuidv4(),
+        FirstName: user.firstName,
+        LastName: user.lastName ? user.lastName : '',
+        Email: user.email,
+        Company: user.company ? user.company : '',
+        Type: 'Firebase',
+        ExternalId: authId
+      };
+      const httpOptions = {
+        headers : new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        })
+      };
+      return this.http.post(`${this.configService.endPoint}`, userData, httpOptions)
+      .subscribe(() => console.log('user created successfully.'),
+        (error) => {
+          console.log(error);
+      });
     }
   }
 }
