@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, ModuleWithProviders, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthenticationService } from './services/authentication.service';
@@ -12,6 +12,8 @@ import { logOutComponent } from './components/log-out/log-out.component';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { StateService } from './services/state.service';
 import { GuardService } from './services/guard.service';
+import { IConfig } from './interfaces/config.interface';
+import { ConfigService } from './services/config.service';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,17 @@ import { GuardService } from './services/guard.service';
   ]
 })
 export class AuthenticationModule {
+  static forRoot(config: IConfig): ModuleWithProviders {
+    return {
+      ngModule: AuthenticationModule,
+      providers: [
+        {
+          provide: ConfigService,
+          useValue: config,
+        },
+      ]
+    };
+  }
 
 }
 
