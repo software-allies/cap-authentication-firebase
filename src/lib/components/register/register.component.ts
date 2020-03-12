@@ -89,7 +89,8 @@ import { Router } from '@angular/router';
             <div class="form-group">
               <input  type="text"
                       class="form-control"
-                      placeholder="Company"/>
+                      placeholder="Company"
+                      formControlName="company"/>
             </div>
 
             <div class="form-group">
@@ -185,6 +186,7 @@ export class AuthRegisterComponent implements OnInit {
       'password': new FormControl('', [Validators.required, Validators.minLength(8), this.capitalLetter]),
       'firstName': new FormControl('', [Validators.required, Validators.minLength(2)]),
       'lastName': new FormControl('', [Validators.required, Validators.minLength(2)]),
+      'company': new FormControl('')
     });
     this.socialMedia = false;
     this.validatedForm = false;
@@ -204,25 +206,26 @@ export class AuthRegisterComponent implements OnInit {
 
   createUser() {
     if (this.createUserForm.valid) {
-        this.authenticationService.createUser(this.createUserForm.value)
-        .then((response: any) => {
-            response.user.getIdTokenResult().then((res: any) => {
-              this.authenticationService.saveCurrentUSer({
-                user: response.user.email.split('@', 1)[0],
-                email: response.user.email,
-                refresh_token: response.user.refreshToken,
-                token: res.token,
-                exp: Date.parse(res.expirationTime)
-              });
-            }).then(() => {
-              response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
-            });
-        }).catch(() => this.existingUser = true);
+      this.authenticationService.createUser(this.createUserForm.value)
+      .then((response: any) => {
+        response.user.getIdTokenResult().then((res: any) => {
+          this.authenticationService.saveCurrentUSer({
+            user: response.user.email.split('@', 1)[0],
+            email: response.user.email,
+            refresh_token: response.user.refreshToken,
+            token: response.user.ma,
+            exp: Date.parse(res.expirationTime),
+          });
+        }).then(() => {
+          this.authenticationService.createUserDB(this.createUserForm.value, response.user.ma, response.user.uid);
+        }).then(() => {
+          response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
+        });
+      }).catch(() => this.existingUser = true);
     } else {
       this.validatedForm = true;
     }
   }
-
 
   signUpSocialMedia(socialMedia: boolean) {
     if (socialMedia) {
@@ -235,7 +238,15 @@ export class AuthRegisterComponent implements OnInit {
             token: res.token,
             exp: Date.parse(res.expirationTime)
           });
-        });
+        }).then(() => {
+          this.authenticationService.createUserDB(
+            {
+              email: response.user.email,
+              firstName: response.user.displayName
+            },
+            response.user.ma,
+            response.user.uid);
+        })
       }).catch(() => this.existingUser = true);
     } else {
       this.authenticationService.authWithGoogle().then((response: any) => {
@@ -247,6 +258,14 @@ export class AuthRegisterComponent implements OnInit {
             token: res.token,
             exp: Date.parse(res.expirationTime)
           });
+        }).then(() => {
+          this.authenticationService.createUserDB(
+            {
+              email: response.user.email,
+              firstName: response.user.displayName
+            },
+            response.user.ma,
+            response.user.uid);
         });
       }).catch(() => this.existingUser = true);
     }
