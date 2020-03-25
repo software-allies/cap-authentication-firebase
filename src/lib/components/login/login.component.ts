@@ -30,16 +30,18 @@ import { Router } from '@angular/router';
                 </div>
                 <div class="form-group row">
 
-                  <div class="col-6">
-                    <small class="form-text">
-                      Password
-                    </small>
-                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <small class="form-text">
+                        Password
+                      </small>
+                    </div>
 
-                  <div class="col-6">
-                    <small class="form-text text-right">
-                      <a href="/auth/forgot-password"> Forgot password? </a>
-                    </small>
+                    <div class="col-6">
+                      <small class="form-text text-right">
+                        <a href="/auth/forgot-password"> Forgot password? </a>
+                      </small>
+                    </div>
                   </div>
 
                   <input  type="password"
