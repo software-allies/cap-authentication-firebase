@@ -1,13 +1,13 @@
 import { Injectable, Inject, PLATFORM_ID} from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { ConfigService } from './config.service';
+import { StateService } from './state.service';
 import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
-import { StateService } from './state.service';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { ConfigService } from './config.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,11 +15,11 @@ export class AuthenticationService {
   private user: Observable<firebase.User | null>;
 
   constructor(
-    private afAuth: AngularFireAuth,
-    private router: Router,
-    private stateService: StateService,
     private configService: ConfigService,
+    private stateService: StateService,
+    private afAuth: AngularFireAuth,
     private http: HttpClient,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId
   ) {
     this.user = this.afAuth.authState;

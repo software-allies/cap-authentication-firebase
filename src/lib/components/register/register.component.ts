@@ -64,7 +64,7 @@ import { Router } from '@angular/router';
                 Required field
               </small>
               <div *ngIf="existingUser"  class="form-control-feeback text-danger text-center">
-                This user already exists, try other alternate data
+                An Account with this username already exist.
               </div>
             </div>
           </div>
