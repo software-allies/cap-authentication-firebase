@@ -34,6 +34,14 @@ export class AuthenticationService {
     return this.user;
   }
 
+  getExternalID() {
+    if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
+      return JSON.parse(localStorage.getItem('User')).cap_uuid
+        ? JSON.parse(localStorage.getItem('User')).cap_uuid
+        : null;
+    }
+  }
+
   createUser(user: any): Promise<firebase.auth.UserCredential> {
     return this.afAuth.auth.createUserWithEmailAndPassword(user.email, user.password);
   }
@@ -103,8 +111,9 @@ export class AuthenticationService {
 
   createUserDB(user: any, token: string, authId: string) {
     if (this.configService.endPoint) {
+      const uuid = uuidv4();
       const userData = {
-        SACAP__UUID__c: uuidv4(),
+        SACAP__UUID__c: uuid,
         FirstName: user.firstName,
         LastName: user.lastName ? user.lastName : '',
         Email: user.email,
@@ -119,7 +128,21 @@ export class AuthenticationService {
         })
       };
       return this.http.post(`${this.configService.endPoint}`, userData, httpOptions)
-      .subscribe(() => console.log('user created successfully.'),
+      .subscribe(() => {
+        if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
+            const userStorage = JSON.parse(localStorage.getItem('User'));
+            this.saveCurrentUSer({
+              user: userStorage.user,
+              email: userStorage.email,
+              refresh_token: userStorage.refresh_token,
+              token: userStorage.token,
+              token_id: userStorage.token_id,
+              id: userStorage.id,
+              cap_uuid: uuid
+            });
+        }
+        console.log('user created successfully.');
+      },
         (error) => {
           console.log(error);
       });
