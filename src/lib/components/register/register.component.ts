@@ -23,7 +23,7 @@ import { Router } from '@angular/router';
                         [ngClass]="{
                           'invalidField':
                             (!createUserForm.get('email').valid && createUserForm.get('email').touched)
-                            || (validatedForm && !createUserForm.get('email').valid),
+                            || (validatedForm && !createUserForm.get('email').valid || existingUser),
                           'is-valid':createUserForm.get('email').valid
                         }"
                         formControlName="email"/>
@@ -63,9 +63,7 @@ import { Router } from '@angular/router';
               <small *ngIf="!createUserForm.get('firstName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
                 Required field
               </small>
-              <div *ngIf="existingUser"  class="form-control-feeback text-danger text-center">
-                An Account with this username already exist.
-              </div>
+
             </div>
           </div>
 
@@ -91,6 +89,10 @@ import { Router } from '@angular/router';
                       class="form-control"
                       placeholder="Company"
                       formControlName="company"/>
+            </div>
+
+            <div *ngIf="existingUser"  class="form-control-feeback text-danger text-center">
+              An Account with this username already exists.
             </div>
 
             <div class="form-group">
@@ -246,7 +248,7 @@ export class AuthRegisterComponent implements OnInit {
             },
             response.user.ma,
             response.user.uid);
-        })
+        });
       }).catch(() => this.existingUser = true);
     } else {
       this.authenticationService.authWithGoogle().then((response: any) => {
