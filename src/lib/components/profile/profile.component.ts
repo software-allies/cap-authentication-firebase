@@ -6,85 +6,105 @@ import { Router } from '@angular/router';
 @Component({
   selector: "cap-profile-firebase",
   template: `
-  <div class="container register-form">
-  <div class="form">
-    <div class="header">
-        <p>Profile</p>
-    </div>
+<div class="box">
+  <div>
     <div class="form-content" *ngIf="user">
-      <div class="row">
-        <div class="col-md-6 mb-4">
-        <form [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
+      <form [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
+        <div class="row">
+          <div class="col-12">
 
-          <div class="form-group" >
-            <small class="form-text">
-              Full name
-            </small>
-            <input  type="text" class="form-control" placeholder="Full name *" formControlName="displayName"
-                    [ngClass]="{
-                      'invalidField':(!profileUserForm.get('displayName').valid)
-                      || (validatedForm && !profileUserForm.get('displayName').valid)
-                    }"
-            />
-            <small *ngIf="!profileUserForm.get('displayName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
-              Required field
-            </small>
-          </div>
-          <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
-              user updated successfully
-          </div>
-          <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
-              Error updating information, try again later
-          </div>
-          <button type="submit"
-                  class="btnSubmit">
-                  Edit Profile
-          </button>
-          </form>
+            <div class="form-group">
+              <small class="form-text">
+                Full name
+              </small>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Full name *"
+                formControlName="displayName"
+                [ngClass]="{
+                  'invalidField':(!profileUserForm.get('displayName').valid)
+                  || (validatedForm && !profileUserForm.get('displayName').valid)
+                }"
+              />
+              <small *ngIf="!profileUserForm.get('displayName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+                  Required field
+              </small>
+            </div>
 
-          <button
-            (click)="changePassword(user.email)"
-            type="submit"
-            class="btnSubmit mt-3">
-            Change Password
-          </button>
-          <label *ngIf="passwordUpdated" class="col-12  text-center col-form-label">
-            An e-mail was sent to your email address that you provided, there you can change your password.
-          </label>
-            <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
-              an error occurred with the server when checking your email, try again later
-          </label>
 
+            <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
+                user updated successfully
+            </div>
+
+            <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
+                Error updating information, try again later
+            </div>
+
+            <button type="submit" class="btn btn-info btn-block btnSubmit">
+              Edit Profile
+            </button>
+
+            <label *ngIf="passwordUpdated" class="col-12  text-center col-form-label">
+              An e-mail was sent to your email address that you provided, there you can change your password.
+            </label>
+              <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
+                an error occurred with the server when checking your email, try again later
+            </label>
+
+          </div>
         </div>
-        <div class="col-md-6">
-          <div class="ml-5">
-            <p> Email : {{user.email}}</p>
-            <p> Full name: {{user.displayName}}</p>
-            <p> Authentication Method: {{user.providerData[0].providerId}} </p>
-            <p> UID User: {{user.providerData[0].uid}} </p>
-            <p *ngIf="user.emailVerified"> Verified Email : Yes</p>
-            <p *ngIf="!user.emailVerified"> Verified Email : No</p>
-            <p> Creation Date: {{user.metadata.creationTime | date:'medium'}}</p>
-            <p> Last SignIn : {{user.metadata.lastSignInTime | date:'medium'}}</p>
+        <div class="row mt-3 mb-3">
+          <div class="col-12">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item"> Email : {{user.email}}</li>
+            <li class="list-group-item"> Full name: {{user.displayName}}</li>
+            <li class="list-group-item"> Authentication Method: {{user.providerData[0].providerId}}</li>
+            <li class="list-group-item"> UID User: {{user.providerData[0].uid}}</li>
+            <li class="list-group-item"> Verified Email: {{user.emailVerified ? 'Si' : 'No'}}</li>
+            <li class="list-group-item"> Creation Date: {{user.metadata.creationTime | date:'medium'}}</li>
+            <li class="list-group-item"> Last SignIn : {{user.metadata.lastSignInTime | date:'medium'}}</li>
+
+            </ul>
           </div>
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-12">
+          <button (click)="changePassword(user.email)" type="submit" class="btn btn-success btn-block btnSubmit">
+              Change Password
+          </button>
+          <label *ngIf="passwordUpdated" class="col-12 text-center col-form-label">
+              An e-mail was sent to your email address that you provided, there you can change your password.
+          </label>
+          <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
+              An error occurred with the server when checking your email, try again later
+          </label>
         </div>
       </div>
     </div>
+
+
+
+
+
+
     <div *ngIf="verifiedUser">
       <div class="form-content">
-        <div class="form-group d-flex justify-content-center row">
-          <label *ngIf="!emailSend" class="col-12  text-center col-form-label">
+        <div class="form-group d-flex justify-content-center row text-center">
+          <label *ngIf="!emailSend" class="col-12 text-center col-form-label">
             Please verify your Account
           </label>
-          <label *ngIf="emailSend" class="col-12  text-center col-form-label">
+          <label *ngIf="emailSend" class="col-12 text-center col-form-label">
             An e-mail was sent to your email address that you provided, there you can verify your email.
           </label>
           <label *ngIf="errorEmailSend" class="col-12 text-danger text-center col-form-label">
-              an error occurred with the server when checking your email, try again later
+            An error occurred with the server when checking your email, try again later
           </label>
-          <div class="col-4">
-              <button *ngIf="!emailSend" type="submit" (click)="emailToVerifySent()" class="btnSubmit">Send verification email</button>
-              <button *ngIf="emailSend" type="button" (click)="goToHome()" class="btnSubmit">Go to Home</button>
+          <div class="col-12 text-center">
+            <button *ngIf="!emailSend" type="submit" (click)="emailToVerifySent()" class="btn btn-success btn-block btnSubmit">Send verification email</button>
+            <button *ngIf="emailSend" type="button" (click)="goToHome()" class="btn btn-default btn-block btnSubmit">Go to Home</button>
           </div>
         </div>
       </div>
@@ -94,35 +114,24 @@ import { Router } from '@angular/router';
 
   `,
   styles: [`
-  .header
-  {
-    text-align: center;
-    height: 50px;
-    background: black;
-    color: #fff;
-    font-weight: bold;
-    line-height: 50px;
+  .box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .form-content
-  {
-    min-height: 150px;
-    padding: 5%;
-    border: 1px solid #ced4da;
-    margin-bottom: 2%;
+  .box>div {
+    height: max-content;
+    border-radius: 10px;
+    border: 1px solid #f2f2f2;
+    padding: 35px;
+    width: 650px;
+    margin: 40px;
   }
-  .form-control{
-    border-radius:1.5rem;
+
+  .box .list-group-item {
+    background-color: transparent;
   }
-  .btnSubmit
-  {
-    border:none;
-    border-radius:1.5rem;
-    padding: 1%;
-    width: 100%;
-    cursor: pointer;
-    background: black;
-    color: #fff;
-  }
+
   .invalidField{
     border-color:#dc3545;
   }
