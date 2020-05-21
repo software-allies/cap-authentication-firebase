@@ -43,10 +43,9 @@ import { Router } from '@angular/router';
         </div>
 
       </div>
-
       <div class="form-group form-check">
         <small class="form-text text-right">
-          <a routerLink="/auth/forgot-password"> Forgot password? </a>
+          <a href="/auth/forgot-password"> Forgot password? </a>
         </small>
       </div>
 
@@ -80,28 +79,6 @@ import { Router } from '@angular/router';
   .invalidField{
     border-color:#dc3545;
   }
-
-  /*.btnFacebook
-  {
-    border:none;
-    border-radius:1.5rem;
-    padding: 1%;
-    width: 100%;
-    cursor: pointer;
-    background: #0000FF;
-    color: #fff;
-  }
-
-  .btnGoogle
-  {
-    border:none;
-    border-radius:1.5rem;
-    padding: 1%;
-    width: 100%;
-    cursor: pointer;
-    background: #FF0000;
-    color: #fff;
-  }*/
   `],
   encapsulation: ViewEncapsulation.Emulated
 })

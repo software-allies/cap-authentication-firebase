@@ -175,11 +175,10 @@ export class AuthRegisterComponent implements OnInit {
             user: response.user.email.split('@', 1)[0],
             email: response.user.email,
             refresh_token: response.user.refreshToken,
-            token: response.user.ma,
+            token: res.token,
             exp: Date.parse(res.expirationTime),
           });
-        }).then(() => {
-          this.authenticationService.createUserDB(this.createUserForm.value, response.user.ma, response.user.uid);
+          this.authenticationService.createUserDB(this.createUserForm.value, res.token, res.claims.user_id);
         }).then(() => {
           response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
         });

@@ -137,7 +137,6 @@ export class AuthenticationService {
               refresh_token: userStorage.refresh_token,
               token: userStorage.token,
               token_id: userStorage.token_id,
-              id: userStorage.id,
               cap_uuid: uuid
             });
         }

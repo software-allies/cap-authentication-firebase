@@ -169,7 +169,6 @@ export class AuthProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('externalID', this.authenticationService.getExternalID());
     this.getProfile();
   }
 
