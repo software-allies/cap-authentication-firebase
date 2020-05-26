@@ -97,7 +97,7 @@ import { Router } from '@angular/router';
 
         <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
 
-        <button (click)="signUpSocialMedia(false)" type="button" class="btn btn-danger btn-block">Google</button>
+        <button (click)="signUpSocialMedia(false)" type="button" class="btn btnGoogle btn-block">Google</button>
 
         <button (click)="signUpSocialMedia(true)" type="button" class="btn btn-primary btn-block">Facebook</button>
 
@@ -121,6 +121,22 @@ import { Router } from '@angular/router';
     width: 450px;
     margin: 40px;
   }
+
+  .btnGoogle
+  {
+    padding: 1%;
+    width: 100%;
+    cursor: pointer;
+    background: #FF0000;
+    color: #fff;
+    transition-duration: 0.2s;
+  }
+
+  .btnGoogle:hover {
+    background-color: rgb(221, 65, 65);
+    color: white;
+  }
+
 
   .invalidField{
     border-color:#dc3545;
