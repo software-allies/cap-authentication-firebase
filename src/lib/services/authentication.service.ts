@@ -147,4 +147,47 @@ export class AuthenticationService {
       });
     }
   }
+
+  getUserFromAPI(id: string) {
+    if (this.configService.endPoint) {
+      const url = `${this.configService.endPoint}/findOne?filter={"where":{"ExternalId":"${id}"}}`;
+      const httpOptions = {
+        headers : new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.getToken()}`
+        })
+      };
+      return this.http.get(url, httpOptions);
+    }
+  }
+
+  updateProfileFromAPI(id: string, data: any) {
+    if (this.ApiToConsult()) {
+      const httpOptions = {
+        headers : new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.getToken()}`
+        })
+      };
+      return this.http.patch(
+        `${this.configService.endPoint}/${id}`,
+        {
+          FirstName: data.firstname,
+          LastName: data.lastname,
+          Company: data.company
+        },
+        httpOptions);
+    }
+  }
+
+  getToken(): string {
+    if (isPlatformBrowser(this.platformId) && localStorage.getItem('User')) {
+      return JSON.parse(localStorage.getItem('User')).token;
+    }
+    return '';
+  }
+
+  ApiToConsult(): boolean {
+    return this.configService.endPoint ? true : false;
+  }
 }
