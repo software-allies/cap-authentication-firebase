@@ -7,20 +7,15 @@
 * profile
 * change password
 
-you can use one of the two largest authentication services on the market **Auth0** or **Firebase**
+you can use one of the most popular google platforms on the market **Firebase**
 
 ## **Previous requirements**
-**CAP AUTHENTICATION** use bootstrap's classes. To be able to display the component in the right way, bootstrap should have been installed in the project. In case you don't have bootstrap installed, you can run the following command or read their [Bootstrap](https://getbootstrap.com/docs/4.3/getting-started/download/):
+**CAP AUTHENTICATION** use bootstrap's classes, You can use a CAP product ([cap-angular-schematic-bootstrap](https://www.npmjs.com/package/cap-angular-schematic-bootstrap)) to configure and install bootstrap to your project the installation is as follows.
+
 ```
-npm install bootstrap
+ng add cap-angular-schematic-bootstrap@latest 4.0.0 true
 ```
-One's that you installed bootstrap you have to configure the `angular.json` and write into `styles`
-```
-"styles": [
-  "node_modules/bootstrap/dist/css/bootstrap.min.css",
-  "styles.scss"
-]
-```
+![Alt text](https://raw.githubusercontent.com/software-allies/cap-angular-schematic-auth-auth0/development/assets/images/cap-angular-schematic-bootstrap.png "cap-angular-schematic-bootstrap")
 
 We will also need **@angular/fire** to use the Firebase services, for this we must have previously created a project on this platform and enabled authentication methods such as **Email/passord**, **Facebook** and **Google**.
 ```
@@ -69,7 +64,9 @@ into the import section
 @NgModule({
   imports: [
     ...
-    AuthenticationModule,
+      AuthenticationModule.forRoot({
+        endPoint: 'https://your-api-domain.com/api/<users>' // can be empty
+      }),
     ...
   ],
 })
