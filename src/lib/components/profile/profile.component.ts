@@ -94,12 +94,16 @@ import { Router } from '@angular/router';
       <div class="row mt-3 mb-3">
         <div class="col-12">
           <ul class="list-group list-group-flush">
-          <li class="list-group-item"> Email : {{userAuth.email}}</li>
+          <li class="list-group-item"> Email: {{userAuth.email}}</li>
+
+          <li *ngIf="userDB" class="list-group-item"> First Name: {{userDB.FirstName}}</li>
+          <li *ngIf="userDB" class="list-group-item"> Last Name: {{userDB.LastName}}</li>
+          <li *ngIf="userDB" class="list-group-item"> Company: {{userDB.Company}}</li>
+
           <li class="list-group-item"> Authentication Method: {{userAuth.providerData[0].providerId}}</li>
-          <li class="list-group-item"> UID User: {{userAuth.providerData[0].uid}}</li>
           <li class="list-group-item"> Verified Email: {{userAuth.emailVerified ? 'Yes' : 'No'}}</li>
           <li class="list-group-item"> Creation Date: {{userAuth.metadata.creationTime | date:'medium'}}</li>
-          <li class="list-group-item"> Last SignIn : {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
+          <li class="list-group-item"> Last SignIn: {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
 
           </ul>
         </div>
@@ -189,6 +193,9 @@ export class AuthProfileComponent implements OnInit {
   passwordUpdated: boolean;
   passwordUpdatedError: boolean;
 
+  authenticationServiceErrorMessage = 'A problem has occurred while establishing communication with the authentication service';
+  serviceErrorBackEndMessage = 'A problem has occurred while establishing communication with the BackEnd';
+
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -220,7 +227,6 @@ export class AuthProfileComponent implements OnInit {
     this.authenticationService.currentUser.subscribe(async (user: any)  =>  {
       if (user && user.emailVerified) {
         this.userAuth = user;
-
         if (this.authenticationService.ApiToConsult()) {
           this.authenticationService.getUserFromAPI(user.uid).subscribe((User: any) => {
             this.userDB = User;
@@ -229,13 +235,12 @@ export class AuthProfileComponent implements OnInit {
               lastname: new FormControl (User.LastName , [Validators.required]),
               company: new FormControl (User.Company, [Validators.required])
             });
-          }, (error: any) => console.log('There was a problem try again refreshing the page.', error));
-      }
-
+          }, (error: any) => console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage));
+        }
       } else {
         this.verifiedUser = true;
       }
-    }, (error: any) => console.log('Your authentication platform is experiencing problems, try later', error));
+    }, (error: any) => console.log('Error ' + error.status + ': ' + this.authenticationServiceErrorMessage));
   }
 
   editProfile() {
@@ -246,7 +251,7 @@ export class AuthProfileComponent implements OnInit {
         setTimeout(() => {
           this.userUpdated = false;
         }, 3000);
-      });
+      }, (error: any) => console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage) );
     } else {
       this.validatedForm = true;
     }

@@ -80,7 +80,7 @@ export class AuthChangePasswordComponent implements OnInit {
 
   ngOnInit() {
     this.changeform = new FormGroup({
-      'email': new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
     });
   }
 
