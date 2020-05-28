@@ -57,14 +57,7 @@ import { Router } from '@angular/router';
                 type="text"
                 class="form-control"
                 formControlName="company"
-                [ngClass]="{
-                  'invalidField':(!profileUserForm.get('company').valid)
-                  || (validatedForm && !profileUserForm.get('company').valid)
-                }"
               />
-              <small *ngIf="!profileUserForm.get('company').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
-                  Required field
-              </small>
             </div>
 
 
@@ -100,7 +93,6 @@ import { Router } from '@angular/router';
           <li *ngIf="userDB" class="list-group-item"> Last Name: {{userDB.LastName}}</li>
           <li *ngIf="userDB" class="list-group-item"> Company: {{userDB.Company}}</li>
 
-          <li class="list-group-item"> Authentication Method: {{userAuth.providerData[0].providerId}}</li>
           <li class="list-group-item"> Verified Email: {{userAuth.emailVerified ? 'Yes' : 'No'}}</li>
           <li class="list-group-item"> Creation Date: {{userAuth.metadata.creationTime | date:'medium'}}</li>
           <li class="list-group-item"> Last SignIn: {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
@@ -233,7 +225,7 @@ export class AuthProfileComponent implements OnInit {
             this.profileUserForm = new FormGroup({
               firstname: new FormControl (User.FirstName, [Validators.required]),
               lastname: new FormControl (User.LastName , [Validators.required]),
-              company: new FormControl (User.Company, [Validators.required])
+              company: new FormControl (User.Company)
             });
           }, (error: any) => console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage));
         }
