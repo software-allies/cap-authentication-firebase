@@ -128,10 +128,18 @@ import { Router } from '@angular/router';
           <label *ngIf="errorEmailSend" class="col-12 text-danger text-center col-form-label">
             An error occurred with the server when checking your email, try again later
           </label>
-          <div class="col-12 text-center">
+          <div class="col-12 mb-5 text-center">
             <button *ngIf="!emailSend" type="submit" (click)="emailToVerifySent()" class="btn btn-success btn-block btnSubmit">Send verification email</button>
             <button *ngIf="emailSend" type="button" (click)="goToHome()" class="btn btn-default btn-block btnSubmit">Go to Home</button>
           </div>
+
+          <label class="col-12 text-center col-form-label">
+            Weather the account have been verified, please click the button.
+          </label>
+          <div class="col-12 text-center">
+            <button type="button" (click)="VerifiedAccount()" class="btn btn-success btn-block btnSubmit"> Verified Account </button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -211,12 +219,16 @@ export class AuthProfileComponent implements OnInit {
     this.emailSend = true;
   }
 
+  VerifiedAccount() {
+    window.location.reload();
+  }
+
   goToHome() {
     this.router.navigate(['/']);
   }
 
    getProfile() {
-    this.authenticationService.currentUser.subscribe(async (user: any)  =>  {
+    this.authenticationService.currentUser.subscribe((user: any)  =>  {
       if (user && user.emailVerified) {
         this.userAuth = user;
         if (this.authenticationService.ApiToConsult()) {

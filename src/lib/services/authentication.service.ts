@@ -137,7 +137,8 @@ export class AuthenticationService {
               refresh_token: userStorage.refresh_token,
               token: userStorage.token,
               token_id: userStorage.token_id,
-              cap_uuid: uuid
+              cap_uuid: uuid,
+              exp: userStorage.exp
             });
         }
         console.log('user created successfully.');
