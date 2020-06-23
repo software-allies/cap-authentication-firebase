@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders, CUSTOM_ELEMENTS_SCHEMA } from '@angular/
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthenticationService } from './services/authentication.service';
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
 
 import { AuthRegisterComponent } from './components/register/register.component';
 import { AuthLoginComponent } from './components/login/login.component';
