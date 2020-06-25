@@ -1,6 +1,6 @@
 # CAP AUTHENTICATION FIREBASE [![Generic badge](https://img.shields.io/badge/CAP-Active-<COLOR>.svg)](https://shields.io/)
 
-**CAP AUTHENTICATION** is a module for **Angular**
+**CAP AUTHENTICATION FIREBASE** is a module for **Angular**
 
 * registration
 * login
@@ -10,7 +10,7 @@
 you can use one of the most popular google platforms on the market **Firebase**
 
 ## **Previous requirements**
-**CAP AUTHENTICATION** use bootstrap's classes, You can use a CAP product ([cap-angular-schematic-bootstrap](https://www.npmjs.com/package/cap-angular-schematic-bootstrap)) to configure and install bootstrap to your project the installation is as follows.
+**CAP AUTHENTICATION FIREBASE** use bootstrap's classes, You can use a CAP product [cap-angular-schematic-bootstrap](https://www.npmjs.com/package/cap-angular-schematic-bootstrap) to configure and install bootstrap to your project the installation is as follows.
 
 ```
 ng add cap-angular-schematic-bootstrap@latest 4.0.0 true
@@ -54,11 +54,11 @@ npm i cap-authentication-firebase
 
 ## Implementation into a module
 
-To use this module go-to the app module and into the sections' import and put the Authentication Module.
+To use this module, go to `app.module.ts`, in the import section and import it `AuthenticationModule` with your proper credentials.
+
 ```
 import { AuthenticationModule } from 'cap-authentication-firebase'
 ```
----
 into the import section
 ```
 @NgModule({
@@ -80,25 +80,88 @@ export class AppModule { }
 ```
 <cap-log-in-firebase></cap-log-in-firebase>
 ```
----
+
 *  **Authentication Register**
 ```
 <cap-register-firebase></cap-register-firebase>
 ```
----
+
 *  **Authentication Profile**
 ```
 <cap-profile-firebase></cap-profile-firebase>
 ```
----
+
 *  **Authentication Forgot Password**
 ```
 <cap-change-password-firebase></cap-change-password-firebase>
 ```
----
+
 *  **Authentication Log Out**
 ```
 <cap-log-out-firebase></cap-log-out-firebase>
+```
+
+## Styles
+
+In order to edit and create classes that affect the components above, a class will have to be overwritten globally! all kinds and styles will have to go in the `src/styles.scss` file. with Pseudo-classes we will be able to modify the styles of the components, the component structure will be illustrated immediately to be able to access with scss each one of the nodes.
+
+You can see an example of how to edit this module with your design [styles.scss](https://github.com/software-allies/cap-authentication-firebase/blob/development/styles.scss).
+
+```
+<div class="box">
+    <div>
+        <form>
+        
+            <!-- Register -->
+            <!-- Login -->
+            <!-- Forgot -->
+            <div class="form-group">
+                <label></label>
+                <input class="form-control">
+                <small class="form-text text-muted"></small>
+            </div>
+            <div class="form-group">
+                <label></label>
+                <input class="form-control">
+                <div class="form-control-feeback text-danger text-center">ErrorMessage</div>
+            </div>
+             <div class="form-group form-check">
+                <small class="form-text text-right">
+                    <a routerLink="#"> goTo </a>
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block"></button>
+            <!-- Register -->
+            <!-- Login -->
+            <!-- Forgot -->
+            
+            <!-- Profile -->
+            <!-- Profile -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <small class="form-text"></small>
+                        <input class="form-control"/>
+                        <small class="form-text"></small>
+                    </div>
+                    <div class="form-control-feeback mb-2 text-success text-center">
+                    </div>
+                    <button class="btn btn-info btn-block btnSubmit"></button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">{{}}</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Profile -->
+            <!-- Profile -->
+            
+        </form>
+    </div>
+</div>
 ```
 
 **Note**: An object is stored in the localStorage to know the status of the User.
