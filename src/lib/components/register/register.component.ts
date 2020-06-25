@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
       <form [formGroup]="createUserForm" (ngSubmit)="createUser()">
 
         <div class="form-group">
-          <label for="email">Email address</label>
+          <label for="email">Email address <span>*</span></label>
           <input
             type="text"
             id="email"
@@ -32,7 +32,7 @@ import { Router } from '@angular/router';
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Password <span>*</span></label>
           <input
             type="password"
             id="password"
@@ -56,7 +56,7 @@ import { Router } from '@angular/router';
         </div>
 
         <div class="form-group">
-          <label for="text">First Name</label>
+          <label for="text">First Name <span>*</span></label>
           <input  type="text"
                   class="form-control"
                   [ngClass]="{
@@ -72,7 +72,7 @@ import { Router } from '@angular/router';
         </div>
 
         <div class="form-group">
-          <label for="text">Last Name</label>
+          <label for="text">Last Name <span>*</span></label>
           <input  type="text"
                   class="form-control"
                   [ngClass]="{
@@ -100,10 +100,10 @@ import { Router } from '@angular/router';
 
         <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
 
+        <!--
         <button (click)="signUpSocialMedia(false)" type="button" class="btn btnGoogle btn-block">Google</button>
-
         <button (click)="signUpSocialMedia(true)" type="button" class="btn btn-primary btn-block">Facebook</button>
-
+        -->
     </form>
   </div>
 </div>
@@ -140,6 +140,9 @@ import { Router } from '@angular/router';
     color: white;
   }
 
+  span {
+    color: #cb2431;
+  }
 
   .invalidField{
     border-color:#dc3545;

@@ -51,10 +51,10 @@ import { Router } from '@angular/router';
 
       <button type="submit" class="btn btn-primary btn-block">Login</button>
 
+      <!--
       <button (click)="signInSocialMedia(false)" type="button" class="btn btnGoogle btn-block">Google</button>
-
       <button (click)="signInSocialMedia(true)" type="button" class="btn btn-primary btn-block" >Facebook</button>
-
+      -->
     </form>
   </div>
 </div>
