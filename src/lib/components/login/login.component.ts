@@ -4,7 +4,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: "cap-log-in-firebase",
+  selector: 'cap-log-in-firebase',
   template: `
 <div class="box">
   <div>
@@ -15,14 +15,15 @@ import { Router } from '@angular/router';
         <input
           type="text"
           id="email"
-          email
           class="form-control"
-          [ngClass]="{'invalidField':(!loginUserForm.get('email').valid && loginUserForm.get('email').touched) || (validatedForm && !loginUserForm.get('email').valid)}"
+          [ngClass]="
+            {'invalidField':(!loginUserForm.get('email').valid && loginUserForm.get('email').touched)
+            || (validatedForm && !loginUserForm.get('email').valid)}"
           formControlName="email"
-          aria-describedby="emailHelp"/>
+          aria-describedby="emailHelp"
+        />
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
       </div>
-
 
       <div class="form-group">
         <label for="password">Password</label>
@@ -30,27 +31,31 @@ import { Router } from '@angular/router';
           type="password"
           id="password"
           class="form-control"
-          [ngClass]="{
-            'invalidField':(!loginUserForm.get('password').valid && loginUserForm.get('password').touched) || (validatedForm && !loginUserForm.get('password').valid)}"
-          formControlName="password"/>
+          [ngClass]="
+            {'invalidField':(!loginUserForm.get('password').valid && loginUserForm.get('password').touched)
+            || (validatedForm && !loginUserForm.get('password').valid)}"
+          formControlName="password"
+        />
 
-        <small *ngIf="!loginUserForm.get('password').valid && loginUserForm.get('password').touched" class="form-text text-center text-muted">
+        <small
+          *ngIf="!loginUserForm.get('password').valid && loginUserForm.get('password').touched"
+          class="form-text text-center text-muted"
+        >
           Your password must be 8-20 characters long, contain letters and numbers and the first letter has to be uppercase.
         </small>
 
-        <div *ngIf="userNotValid"  class="form-control-feeback text-danger text-center">
-          invalid email or password
+        <div class="form-group form-check">
+          <small class="form-text text-right">
+            <a href="/auth/forgot-password"> Forgot password? </a>
+          </small>
         </div>
 
-      </div>
-      <div class="form-group form-check">
-        <small class="form-text text-right">
-          <a href="/auth/forgot-password"> Forgot password? </a>
-        </small>
+        <div *ngIf="userNotValid" class="form-control-feeback text-danger text-center">
+          invalid email or password
+        </div>
       </div>
 
       <button type="submit" class="btn btn-primary btn-block">Login</button>
-
       <!--
       <button (click)="signInSocialMedia(false)" type="button" class="btn btnGoogle btn-block">Google</button>
       <button (click)="signInSocialMedia(true)" type="button" class="btn btn-primary btn-block" >Facebook</button>
@@ -97,7 +102,7 @@ import { Router } from '@angular/router';
   `],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class AuthLoginComponent implements OnInit{
+export class AuthLoginComponent implements OnInit {
 
   loginUserForm: FormGroup;
   userNotValid: boolean;
@@ -115,8 +120,8 @@ export class AuthLoginComponent implements OnInit{
 
   ngOnInit() {
     this.loginUserForm = new FormGroup({
-      'email': new FormControl('', [Validators.required]),
-      'password': new FormControl('', [Validators.required])
+      email: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required])
     });
   }
 
