@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
@@ -109,6 +109,9 @@ export class AuthLoginComponent implements OnInit {
   socialMedia: boolean;
   validatedForm: boolean;
 
+  @Output() userLoginData = new EventEmitter();
+  @Output() userLoginError = new EventEmitter();
+
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -129,6 +132,7 @@ export class AuthLoginComponent implements OnInit {
     if (this.loginUserForm.valid) {
       this.authenticationService.loginUser(this.loginUserForm.value)
         .then((response: any) => {
+        this.userLoginData.emit(response);
         response.user.getIdTokenResult().then((res: any) => {
           this.authenticationService.saveCurrentUSer({
             user: response.user.email.split('@', 1)[0],
@@ -139,7 +143,10 @@ export class AuthLoginComponent implements OnInit {
           });
           this.router.navigate(['/']);
         });
-        }).catch(error => this.userNotValid = true);
+        }).catch(error => {
+          this.userLoginError.emit(error);
+          this.userNotValid = true;
+        });
     } else {
       this.validatedForm = true;
     }

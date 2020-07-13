@@ -1,10 +1,10 @@
-import { Component, OnInit , ViewEncapsulation } from '@angular/core';
+import { Component, OnInit , ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: "cap-profile-firebase",
+  selector: 'cap-profile-firebase',
   template: `
 <div class="box">
   <div>
@@ -73,18 +73,15 @@ import { Router } from '@angular/router';
               Edit Profile
             </button>
 
-            <label *ngIf="passwordUpdated" class="col-12  text-center col-form-label">
-              An e-mail was sent to your email address that you provided, there you can change your password.
-            </label>
-              <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
-                an error occurred with the server when checking your email, try again later
+            <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
+              an error occurred with the server when checking your email, try again later
             </label>
 
           </div>
         </div>
       </form>
 
-      <div class="row mt-3 mb-3">
+      <div class="row mt-3">
         <div class="col-12">
           <ul class="list-group list-group-flush">
           <li class="list-group-item"> Email: {{userAuth.email}}</li>
@@ -145,7 +142,6 @@ import { Router } from '@angular/router';
     </div>
   </div>
 </div>
-
   `,
   styles: [`
   .box {
@@ -196,6 +192,15 @@ export class AuthProfileComponent implements OnInit {
   authenticationServiceErrorMessage = 'A problem has occurred while establishing communication with the authentication service';
   serviceErrorBackEndMessage = 'A problem has occurred while establishing communication with the BackEnd';
 
+  @Output() userProfileData = new EventEmitter();
+  @Output() userProfileUpdate = new EventEmitter();
+  @Output() userProfileError = new EventEmitter();
+
+  @Output() userProfileDataBase = new EventEmitter();
+  @Output() userProfileDataBaseUpdate = new EventEmitter();
+  @Output() userProfileDataBaseUpdateError = new EventEmitter();
+  @Output() userProfileDataBaseError = new EventEmitter();
+
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -229,33 +234,50 @@ export class AuthProfileComponent implements OnInit {
 
    getProfile() {
     this.authenticationService.currentUser.subscribe((user: any)  =>  {
-      if (user && user.emailVerified) {
-        this.userAuth = user;
-        if (this.authenticationService.ApiToConsult()) {
-          this.authenticationService.getUserFromAPI(user.uid).subscribe((User: any) => {
-            this.userDB = User;
-            this.profileUserForm = new FormGroup({
-              firstname: new FormControl (User.FirstName, [Validators.required]),
-              lastname: new FormControl (User.LastName , [Validators.required]),
-              company: new FormControl (User.Company)
+      this.userProfileData.emit(user);
+      if (user) {
+        if (user.emailVerified) {
+          this.userAuth = user;
+          if (this.authenticationService.ApiToConsult()) {
+            this.authenticationService.getUserFromAPI(user.uid).subscribe((User: any) => {
+              this.userProfileDataBase.emit(User);
+              this.userDB = User;
+              this.profileUserForm = new FormGroup({
+                firstname: new FormControl (User.FirstName, [Validators.required]),
+                lastname: new FormControl (User.LastName , [Validators.required]),
+                company: new FormControl (User.Company)
+              });
+            }, (error: any) => {
+              console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage);
+              this.userProfileDataBaseError.emit(error);
             });
-          }, (error: any) => console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage));
+          }
+        } else {
+          this.verifiedUser = true;
         }
       } else {
-        this.verifiedUser = true;
+        this.authenticationService.signOutAndGoto('/auth/login');
       }
-    }, (error: any) => console.log('Error ' + error.status + ': ' + this.authenticationServiceErrorMessage));
+
+    }, (error: any) => {
+      console.log('Error ' + error.status + ': ' + this.authenticationServiceErrorMessage);
+      this.userProfileError.emit(error);
+    });
   }
 
   editProfile() {
     if (this.profileUserForm.valid) {
       this.authenticationService.updateProfileFromAPI(this.userDB.id, this.profileUserForm.value).subscribe((userupdated: any) => {
+        this.userProfileDataBaseUpdate.emit(userupdated);
         this.userDB = userupdated;
         this.userUpdated = true;
         setTimeout(() => {
           this.userUpdated = false;
         }, 3000);
-      }, (error: any) => console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage) );
+      }, (error: any) => {
+        console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage);
+        this.userProfileDataBaseUpdateError.emit(error);
+      });
     } else {
       this.validatedForm = true;
     }

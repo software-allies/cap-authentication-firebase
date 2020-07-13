@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
@@ -69,6 +69,10 @@ export class AuthChangePasswordComponent implements OnInit {
   errorEmailSend: boolean;
   validatedForm: boolean;
 
+  @Output() userEmail = new EventEmitter();
+  @Output() forgotPasswordRequest = new EventEmitter();
+  @Output() forgotPasswordRequestError = new EventEmitter();
+
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router
@@ -86,9 +90,14 @@ export class AuthChangePasswordComponent implements OnInit {
 
   forgorPassword() {
     if (this.changeform.valid) {
+      this.userEmail.emit(this.changeform.get(['email']).value);
       this.authenticationService.changePassword(this.changeform.get(['email']).value).then((user: any) => {
+        this.forgotPasswordRequest.emit(true);
         this.emailSend = true;
-      }).catch(error => this.errorEmailSend = true);
+      }).catch(error => {
+        this.errorEmailSend = true;
+        this.forgotPasswordRequestError.emit(error);
+      });
     } else {
       this.validatedForm = true;
     }

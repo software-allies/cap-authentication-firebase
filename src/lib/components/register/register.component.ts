@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
             formControlName="email"
             aria-describedby="emailHelp"/>
           <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-          <small *ngIf="!createUserForm.get('firstName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+          <small *ngIf="!createUserForm.get('email').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
             Required field
           </small>
         </div>
@@ -160,6 +160,10 @@ export class AuthRegisterComponent implements OnInit {
   socialMedia: boolean;
   validatedForm: boolean;
 
+  @Output() userRegisterData = new EventEmitter();
+  @Output() userRegisterJWT = new EventEmitter();
+  @Output() userRegisterError = new EventEmitter();
+
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router
@@ -196,6 +200,7 @@ export class AuthRegisterComponent implements OnInit {
     if (this.createUserForm.valid) {
       this.authenticationService.createUser(this.createUserForm.value)
       .then((response: any) => {
+        this.userRegisterData.emit(response);
         response.user.getIdTokenResult().then((res: any) => {
           this.authenticationService.saveCurrentUSer({
             user: response.user.email.split('@', 1)[0],
@@ -204,11 +209,15 @@ export class AuthRegisterComponent implements OnInit {
             token: res.token,
             exp: Date.parse(res.expirationTime),
           });
+          this.userRegisterJWT.emit(res);
           this.authenticationService.createUserDB(this.createUserForm.value, res.token, res.claims.user_id);
         }).then(() => {
           response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
         });
-      }).catch(() => this.existingUser = true);
+      }).catch((error) => {
+        this.existingUser = true;
+        this.userRegisterError.emit(error);
+      });
     } else {
       this.validatedForm = true;
     }
