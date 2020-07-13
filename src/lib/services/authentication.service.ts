@@ -61,6 +61,17 @@ export class AuthenticationService {
     return this.afAuth.auth.signOut();
   }
 
+  signOutAndGoto(goTo: string): Promise<void> {
+    if (isPlatformBrowser(this.platformId)) {
+      if (localStorage.getItem('User')) {
+        localStorage.removeItem('User');
+        this.stateService.setState('isLogged', false);
+      }
+    }
+    this.router.navigate([`${goTo}`]);
+    return this.afAuth.auth.signOut();
+  }
+
   saveCurrentUSer(user: {}) {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('User', JSON.stringify(user));
