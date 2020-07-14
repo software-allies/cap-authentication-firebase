@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 <div class="box">
   <div>
     <div class="form-content" *ngIf="userAuth">
-      <form *ngIf="userDB" [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
+      <form *ngIf="userDB && updateUser" [formGroup]="profileUserForm" (ngSubmit)="editProfile()">
         <div class="row">
           <div class="col-12">
 
@@ -70,7 +70,11 @@ import { Router } from '@angular/router';
             </div>
 
             <button type="submit" class="btn btn-info btn-block btnSubmit">
-              Edit Profile
+              Save
+            </button>
+
+            <button (click)="changeView()" class="btn btn-info btn-block btnSubmit">
+              Cancel
             </button>
 
             <label *ngIf="passwordUpdatedError" class="col-12 text-danger text-center col-form-label">
@@ -81,7 +85,7 @@ import { Router } from '@angular/router';
         </div>
       </form>
 
-      <div class="row mt-3">
+      <div *ngIf="!updateUser" class="row mt-3">
         <div class="col-12">
           <ul class="list-group list-group-flush">
           <li class="list-group-item"> Email: {{userAuth.email}}</li>
@@ -95,10 +99,15 @@ import { Router } from '@angular/router';
           <li class="list-group-item"> Last SignIn: {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
 
           </ul>
+
+          <button (click)="changeView()" type="submit" class="btn btn-success btn-block btnSubmit">
+            Edit Profile
+          </button>
+
         </div>
       </div>
 
-      <div class="row">
+      <div style="margin-top: 1.5rem" class="row">
         <div class="col-12">
           <button (click)="changePassword(userAuth.email)" type="submit" class="btn btn-success btn-block btnSubmit">
               Change Password
@@ -189,6 +198,8 @@ export class AuthProfileComponent implements OnInit {
   passwordUpdated: boolean;
   passwordUpdatedError: boolean;
 
+  updateUser: boolean;
+
   authenticationServiceErrorMessage = 'A problem has occurred while establishing communication with the authentication service';
   serviceErrorBackEndMessage = 'A problem has occurred while establishing communication with the BackEnd';
 
@@ -213,10 +224,15 @@ export class AuthProfileComponent implements OnInit {
     this.errorEmailSend = false;
     this.passwordUpdated = false;
     this.passwordUpdatedError = false;
+    this.updateUser = false;
   }
 
   ngOnInit() {
     this.getProfile();
+  }
+
+  changeView() {
+    this.updateUser = !this.updateUser;
   }
 
   emailToVerifySent() {
