@@ -62,14 +62,14 @@ import { Router } from '@angular/router';
 
 
             <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
-                user updated successfully
+              user updated successfully
             </div>
 
             <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
-                Error updating information, try again later
+              Error updating information, try again later
             </div>
 
-            <button type="submit" class="btn btn-info btn-block btnSubmit">
+            <button type="submit" class="btn btn-info btn-block btnSubmit mb-3">
               Save
             </button>
 
@@ -85,19 +85,63 @@ import { Router } from '@angular/router';
         </div>
       </form>
 
-      <div *ngIf="!updateUser" class="row mt-3">
+
+      <form *ngIf="!userDB && updateUser && firebaseUser" [formGroup]="profileFirebaseUserForm" (ngSubmit)="editProfileFirebase()">
+        <div class="row">
+          <div class="col-12">
+
+            <div class="form-group">
+              <small class="form-text">
+                Full Name
+              </small>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="displayName"
+                [ngClass]="{
+                  'invalidField':(!profileFirebaseUserForm.get('displayName').valid)
+                  || (validatedForm && !profileFirebaseUserForm.get('displayName').valid)
+                }"
+              />
+              <small *ngIf="!profileFirebaseUserForm.get('displayName').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+                  Required field
+              </small>
+            </div>
+
+            <div *ngIf="userUpdated" class="form-control-feeback mb-2 text-success text-center">
+              user updated successfully
+            </div>
+
+            <div *ngIf="errorUpdate" class="form-control-feeback mb-2 text-danger text-center">
+              Error updating information, try again later
+            </div>
+
+            <button type="submit" class="btn btn-info btn-block btnSubmit mb-3">
+              Save
+            </button>
+
+            <button (click)="changeView()" class="btn btn-info btn-block btnSubmit">
+              Cancel
+            </button>
+
+          </div>
+        </div>
+      </form>
+
+
+      <div *ngIf="!updateUser" class="row mt-3 mb-3">
         <div class="col-12">
           <ul class="list-group list-group-flush">
-          <li class="list-group-item"> Email: {{userAuth.email}}</li>
+            <li class="list-group-item"> Email: {{userAuth.email}}</li>
 
-          <li *ngIf="userDB" class="list-group-item"> First Name: {{userDB.FirstName}}</li>
-          <li *ngIf="userDB" class="list-group-item"> Last Name: {{userDB.LastName}}</li>
-          <li *ngIf="userDB" class="list-group-item"> Company: {{userDB.Company}}</li>
+            <li *ngIf="userDB" class="list-group-item"> First Name: {{userDB.FirstName}}</li>
+            <li *ngIf="userDB" class="list-group-item"> Last Name: {{userDB.LastName}}</li>
+            <li *ngIf="userDB" class="list-group-item"> Company: {{userDB.Company}}</li>
 
-          <li class="list-group-item"> Verified Email: {{userAuth.emailVerified ? 'Yes' : 'No'}}</li>
-          <li class="list-group-item"> Creation Date: {{userAuth.metadata.creationTime | date:'medium'}}</li>
-          <li class="list-group-item"> Last SignIn: {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
-
+            <li *ngIf="!userDB" class="list-group-item"> Full Name: {{userAuth.displayName}}</li>
+            <li class="list-group-item"> Verified Email: {{userAuth.emailVerified ? 'Yes' : 'No'}}</li>
+            <li class="list-group-item"> Creation Date: {{userAuth.metadata.creationTime | date:'medium'}}</li>
+            <li class="list-group-item"> Last SignIn: {{userAuth.metadata.lastSignInTime | date:'medium'}}</li>
           </ul>
 
           <button (click)="changeView()" type="submit" class="btn btn-success btn-block btnSubmit">
@@ -107,7 +151,7 @@ import { Router } from '@angular/router';
         </div>
       </div>
 
-      <div style="margin-top: 1.5rem" class="row">
+      <div *ngIf="!updateUser" class="row">
         <div class="col-12">
           <button (click)="changePassword(userAuth.email)" type="submit" class="btn btn-success btn-block btnSubmit">
               Change Password
@@ -183,6 +227,7 @@ import { Router } from '@angular/router';
 export class AuthProfileComponent implements OnInit {
 
   profileUserForm: FormGroup;
+  profileFirebaseUserForm: FormGroup;
   emailSend: boolean;
 
   errorUpdate: boolean;
@@ -199,6 +244,7 @@ export class AuthProfileComponent implements OnInit {
   passwordUpdatedError: boolean;
 
   updateUser: boolean;
+  firebaseUser: boolean;
 
   authenticationServiceErrorMessage = 'A problem has occurred while establishing communication with the authentication service';
   serviceErrorBackEndMessage = 'A problem has occurred while establishing communication with the BackEnd';
@@ -225,6 +271,7 @@ export class AuthProfileComponent implements OnInit {
     this.passwordUpdated = false;
     this.passwordUpdatedError = false;
     this.updateUser = false;
+    this.firebaseUser = false;
   }
 
   ngOnInit() {
@@ -268,6 +315,12 @@ export class AuthProfileComponent implements OnInit {
               this.userProfileDataBaseError.emit(error);
             });
           }
+          if (!this.userDB) {
+            this.firebaseUser = true;
+            this.profileFirebaseUserForm = new FormGroup({
+              displayName: new FormControl (user.displayName, [Validators.required]),
+            });
+          }
         } else {
           this.verifiedUser = true;
         }
@@ -289,13 +342,36 @@ export class AuthProfileComponent implements OnInit {
         this.userUpdated = true;
         setTimeout(() => {
           this.userUpdated = false;
-        }, 3000);
+          this.changeView();
+        }, 1000);
       }, (error: any) => {
+        this.errorUpdate = true;
+        setTimeout(() => {
+          this.errorUpdate = false;
+        }, 1000);
         console.log('Error ' + error.status + ': ' + this.serviceErrorBackEndMessage);
         this.userProfileDataBaseUpdateError.emit(error);
       });
     } else {
       this.validatedForm = true;
+    }
+  }
+
+  editProfileFirebase() {
+    if (this.profileFirebaseUserForm.valid) {
+      this.authenticationService.updateProfile(this.profileFirebaseUserForm.value).then((user: any) => {
+        this.userUpdated = true;
+        setTimeout(() => {
+          this.userUpdated = false;
+          this.changeView();
+        }, 1000);
+      }).catch((error: any) => {
+        this.errorUpdate = true;
+        setTimeout(() => {
+          this.errorUpdate = false;
+        }, 1000);
+        console.log('Error ' + error.status + ': ' + this.authenticationServiceErrorMessage);
+      });
     }
   }
 
