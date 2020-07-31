@@ -262,6 +262,7 @@ export class AuthProfileComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private router: Router,
   ) {
+    console.log('dentro');
     this.emailSend = false;
     this.userUpdated = false;
     this.errorUpdate = false;
@@ -279,6 +280,8 @@ export class AuthProfileComponent implements OnInit {
   }
 
   changeView() {
+    this.passwordUpdated = false;
+    this.passwordUpdatedError = false;
     this.updateUser = !this.updateUser;
   }
 
