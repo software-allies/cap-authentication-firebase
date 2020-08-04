@@ -2,6 +2,7 @@ import { Component, OnInit , ViewEncapsulation, Output, EventEmitter } from '@an
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'cap-profile-firebase',
@@ -73,7 +74,7 @@ import { Router } from '@angular/router';
               Save
             </button>
 
-            <button (click)="changeView()" class="btn btn-info btn-block btnSubmit">
+            <button (click)="changeView(true)" class="btn btn-info btn-block btnSubmit">
               Cancel
             </button>
 
@@ -120,7 +121,7 @@ import { Router } from '@angular/router';
               Save
             </button>
 
-            <button (click)="changeView()" class="btn btn-info btn-block btnSubmit">
+            <button (click)="changeView(true)" class="btn btn-info btn-block btnSubmit">
               Cancel
             </button>
 
@@ -262,7 +263,6 @@ export class AuthProfileComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private router: Router,
   ) {
-    console.log('dentro');
     this.emailSend = false;
     this.userUpdated = false;
     this.errorUpdate = false;
@@ -279,10 +279,23 @@ export class AuthProfileComponent implements OnInit {
     this.getProfile();
   }
 
-  changeView() {
+  changeView(resetForm: boolean = false) {
     this.passwordUpdated = false;
     this.passwordUpdatedError = false;
     this.updateUser = !this.updateUser;
+    if (resetForm) {
+      if (this.userDB) {
+        this.profileUserForm = new FormGroup({
+          firstname: new FormControl (this.userDB.FirstName, [Validators.required]),
+          lastname: new FormControl (this.userDB.LastName , [Validators.required]),
+          company: new FormControl (this.userDB.Company)
+        });
+      } else if (this.userAuth) {
+        this.profileFirebaseUserForm = new FormGroup({
+          displayName: new FormControl (this.userAuth.displayName, [Validators.required]),
+        });
+      }
+    }
   }
 
   emailToVerifySent() {
@@ -379,8 +392,25 @@ export class AuthProfileComponent implements OnInit {
   }
 
   changePassword(email: string) {
-    this.authenticationService.changePassword(email).then(() => {
-      this.passwordUpdated = true;
-    }).catch(() => this.passwordUpdatedError = true);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `If you want to accept, you will automatically log out for security`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#000',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, I agree'
+    }).then((result) => {
+      if (result.value) {
+        this.authenticationService.changePassword(email).then(() => {
+          Swal.fire(
+            'Succes!',
+            'An e-mail was sent to your email address that you provided, there you can verify your email.',
+            'success'
+          );
+          this.authenticationService.signOut();
+        }).catch(() => Swal.fire('Error!', 'An error occurred with the server when checking your email, try again later.', 'error'));
+      }
+    });
   }
 }
