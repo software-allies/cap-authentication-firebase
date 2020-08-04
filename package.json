@@ -29,7 +29,8 @@
     "@angular/fire": "^5.2.1",
     "firebase": "^7.2.3",
     "bootstrap": "^4.4.1",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "sweetalert2": "^9.5.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.23",
