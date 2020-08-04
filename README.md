@@ -17,9 +17,9 @@ ng add cap-angular-schematic-bootstrap@latest 4.0.0 true
 ```
 ![Alt text](https://raw.githubusercontent.com/software-allies/cap-angular-schematic-auth-auth0/development/assets/images/cap-angular-schematic-bootstrap.png "cap-angular-schematic-bootstrap")
 
-We will also need **@angular/fire** to use the Firebase services, for this we must have previously created a project on this platform and enabled authentication methods such as **Email/passord**, **Facebook** and **Google**.
+We will also need **@angular/fire** to use the Firebase services, for this we must have previously created a project on this platform and enabled authentication methods such as **Email/passord**, **Facebook** and **Google** and other necessary dependencies that you can install in the following way..
 ```
-npm install firebase @angular/fire --save
+npm install uuid sweetalert2 firebase @angular/fire --save
 ```
 
 We position ourselves in the **app.module.ts** of our project and configure **AngularFireModule** with the credentials we obtain from the Firebase platform. It will look as follows.
