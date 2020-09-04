@@ -88,6 +88,29 @@ import { Register, RegisterJWT } from '../../interfaces/authentication.interface
           </small>
         </div>
 
+        <div *ngIf="profileType" class="form-group">
+          <label for="text">Profile <span>*</span></label>
+          <select
+          formControlName="profile"
+          id="inputAccountType"
+          class="form-control"
+          [ngClass]="{
+            'invalidField':
+              (!createUserForm.get('profile').valid && createUserForm.get('profile').touched)
+              || (validatedForm && !createUserForm.get('profile').valid),
+            'is-valid':createUserForm.get('profile').valid
+          }"
+          >
+            <!-- <option value="" selected disabled hidden>Select a profile</option> -->
+            <option *ngFor="let type of profileTypeArray" value="{{ type }}" class="form-control">
+              {{ type }}
+            </option>
+          </select>
+          <small *ngIf="!createUserForm.get('profile').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+            Required field
+          </small>
+        </div>
+
         <div class="form-group">
           <label for="text">Company</label>
           <input  type="text"
@@ -162,6 +185,9 @@ export class AuthRegisterComponent implements OnInit {
   validatedForm: boolean;
 
   @Input() redirectTo?: string = '/';
+  @Input() profileType?: boolean = false;
+  @Input() profileTypeArray?: string[] = ['Company', 'Student', 'University'];
+
   @Output() userRegisterData = new EventEmitter<Register>();
   @Output() userRegisterJWT = new EventEmitter<RegisterJWT>();
   @Output() userRegisterError = new EventEmitter();
@@ -171,6 +197,11 @@ export class AuthRegisterComponent implements OnInit {
     private router: Router
   ) {
     this.existingUser = false;
+    this.socialMedia = false;
+    this.validatedForm = false;
+  }
+
+  ngOnInit() {
     this.createUserForm = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -182,11 +213,10 @@ export class AuthRegisterComponent implements OnInit {
       lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       company: new FormControl('')
     });
-    this.socialMedia = false;
-    this.validatedForm = false;
+    if (this.profileType) {
+      this.createUserForm.addControl('profile', new FormControl('', Validators.required));
+    }
   }
-
-  ngOnInit() { }
 
   capitalLetter(control: FormControl): { [s: string]: boolean } {
     const letterAscii = control.value.charCodeAt(0);
