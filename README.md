@@ -81,6 +81,7 @@ OutPuts are integrated in each of the packaged components for the transfer of in
 *  **Authentication LogIn**
 ```
 <cap-log-in-firebase
+  [redirectTo]="'/home'"
   (userLoginData)="userLoginData($event)"
   (userLoginError)="userLoginError($event)">
 </cap-log-in-firebase>
@@ -107,6 +108,7 @@ export class LoginComponent {
 *  **Authentication Register**
 ```
 <cap-register-firebase
+  [redirectTo]="'/home'"
   (userRegisterData)="userRegisterData($event)"
   (userRegisterError)="userRegisterError($event)"
   (userRegisterJWT)="userRegisterJWT($event)">

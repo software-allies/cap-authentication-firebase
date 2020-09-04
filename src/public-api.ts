@@ -11,3 +11,4 @@ export * from './lib/components/log-out/log-out.component';
 export * from './lib/components/login/login.component';
 export * from './lib/components/profile/profile.component';
 export * from './lib/components/register/register.component';
+export * from './lib/interfaces/authentication.interface';
