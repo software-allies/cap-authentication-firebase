@@ -1,7 +1,8 @@
-import { Component, ViewEncapsulation, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
+import { Register, RegisterJWT } from '../../interfaces/authentication.interface';
 
 @Component({
   selector: "cap-register-firebase",
@@ -160,8 +161,9 @@ export class AuthRegisterComponent implements OnInit {
   socialMedia: boolean;
   validatedForm: boolean;
 
-  @Output() userRegisterData = new EventEmitter();
-  @Output() userRegisterJWT = new EventEmitter();
+  @Input() redirectTo?: string = '/';
+  @Output() userRegisterData = new EventEmitter<Register>();
+  @Output() userRegisterJWT = new EventEmitter<RegisterJWT>();
   @Output() userRegisterError = new EventEmitter();
 
   constructor(
@@ -200,7 +202,10 @@ export class AuthRegisterComponent implements OnInit {
     if (this.createUserForm.valid) {
       this.authenticationService.createUser(this.createUserForm.value)
       .then((response: any) => {
-        this.userRegisterData.emit(response);
+        this.userRegisterData.emit({
+          userData: this.createUserForm.value,
+          response
+        });
         response.user.getIdTokenResult().then((res: any) => {
           this.authenticationService.saveCurrentUSer({
             user: response.user.email.split('@', 1)[0],
@@ -212,7 +217,7 @@ export class AuthRegisterComponent implements OnInit {
           this.userRegisterJWT.emit(res);
           this.authenticationService.createUserDB(this.createUserForm.value, res.token, res.claims.user_id);
         }).then(() => {
-          response.user.sendEmailVerification().then(() => this.router.navigate(['/']));
+          response.user.sendEmailVerification().then(() => this.router.navigate([`${this.redirectTo}`]));
         });
       }).catch((error) => {
         this.existingUser = true;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
@@ -46,7 +46,7 @@ import { Router } from '@angular/router';
 
         <div class="form-group form-check">
           <small class="form-text text-right">
-            <a href="/auth/forgot-password"> Forgot password? </a>
+            <a routerLink="/auth/forgot-password"> Forgot password? </a>
           </small>
         </div>
 
@@ -109,6 +109,7 @@ export class AuthLoginComponent implements OnInit {
   socialMedia: boolean;
   validatedForm: boolean;
 
+  @Input() redirectTo?: string = '/';
   @Output() userLoginData = new EventEmitter();
   @Output() userLoginError = new EventEmitter();
 
@@ -141,7 +142,7 @@ export class AuthLoginComponent implements OnInit {
             token: res.token,
             exp: Date.parse(res.expirationTime)
           });
-          this.router.navigate(['/']);
+          this.router.navigate([`${this.redirectTo}`]);
         });
         }).catch(error => {
           this.userLoginError.emit(error);
