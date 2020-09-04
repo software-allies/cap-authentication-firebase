@@ -109,6 +109,8 @@ export class LoginComponent {
 ```
 <cap-register-firebase
   [redirectTo]="'/home'"
+  [profileType]="true"
+  [profileTypeArray]="['Administrator','Job Seeker','University', 'Student']"
   (userRegisterData)="userRegisterData($event)"
   (userRegisterError)="userRegisterError($event)"
   (userRegisterJWT)="userRegisterJWT($event)">
@@ -116,6 +118,8 @@ export class LoginComponent {
 ```
 ```
 import { Component, OnInit } from '@angular/core';
+import { Register, RegisterJWT } from 'cap-authentication-firebase';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -123,13 +127,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegisterComponent {
 
-  userRegisterData(UserData: any) {
+  userRegisterData(UserData: Register) {
     // console.log(UserData);
   }
   userRegisterError(UserError: any) {
     // console.log(UserError);
   }
-  userRegisterJWT(JWT: any) {
+  userRegisterJWT(JWT: RegisterJWT) {
     // console.log(JWT);
   }
   
