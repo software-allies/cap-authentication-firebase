@@ -13,3 +13,4 @@ export * from './lib/components/profile/profile.component';
 export * from './lib/components/register/register.component';
 export * from './lib/interfaces/authentication.interface';
 export * from './lib/components/verify/veryfy.component';
+export * from './lib/services/guard-logout.service';
