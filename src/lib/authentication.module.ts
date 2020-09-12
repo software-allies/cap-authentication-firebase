@@ -13,8 +13,10 @@ import { AuthVerifyComponent } from './components/verify/veryfy.component';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { StateService } from './services/state.service';
 import { GuardService } from './services/guard.service';
+import { GuardLogOutService } from './services/guard-logout.service';
 import { IConfig } from './interfaces/config.interface';
 import { ConfigService } from './services/config.service';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import { ConfigService } from './services/config.service';
     ReactiveFormsModule,
     CommonModule,
     FormsModule,
+    RouterModule,
     AngularFireAuthModule,
   ],
   exports: [
@@ -43,7 +46,8 @@ import { ConfigService } from './services/config.service';
   providers: [
     AuthenticationService,
     StateService,
-    GuardService
+    GuardService,
+    GuardLogOutService
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
@@ -61,6 +65,4 @@ export class AuthenticationModule {
       ]
     };
   }
-
 }
-
