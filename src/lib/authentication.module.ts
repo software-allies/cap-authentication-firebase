@@ -17,6 +17,7 @@ import { GuardLogOutService } from './services/guard-logout.service';
 import { IConfig } from './interfaces/config.interface';
 import { ConfigService } from './services/config.service';
 import { RouterModule } from '@angular/router';
+import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule,
     AngularFireAuthModule,
+    PasswordStrengthMeterModule
   ],
   exports: [
     AuthLoginComponent,
