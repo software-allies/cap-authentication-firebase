@@ -45,11 +45,12 @@ import { Register, RegisterJWT } from '../../interfaces/authentication.interface
               'is-valid':!createUserForm.get('password').errors?.capitalLetter && createUserForm.get('password').valid
             }"
             formControlName="password"/>
+            <password-strength-meter [password]="createUserForm.get('password').value"></password-strength-meter>
             <small
               *ngIf="!createUserForm.get('password').pristine && !createUserForm.get('password').valid"
               class="form-text text-center text-muted"
             >
-              Your password must contain the following: 8-20 characters long, the first character must be capital (uppercase) letter, a numbers and a lowercase letter.
+              Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
             </small>
             <small *ngIf="!createUserForm.get('password').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
               Required field
@@ -208,7 +209,7 @@ export class AuthRegisterComponent implements OnInit {
         Validators.minLength(3),
         Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')
       ]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8), this.capitalLetter]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
       firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       company: new FormControl('')
@@ -218,7 +219,7 @@ export class AuthRegisterComponent implements OnInit {
     }
   }
 
-  capitalLetter(control: FormControl): { [s: string]: boolean } {
+  /*capitalLetter(control: FormControl): { [s: string]: boolean } {
     const letterAscii = control.value.charCodeAt(0);
     if (control.value && letterAscii > 64 && letterAscii < 91) {
       return null;
@@ -226,7 +227,7 @@ export class AuthRegisterComponent implements OnInit {
     return {
       capitalLetter: true
     };
-  }
+  }*/
 
   createUser() {
     if (this.createUserForm.valid) {
