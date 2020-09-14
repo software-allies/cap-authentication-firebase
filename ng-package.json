@@ -6,7 +6,8 @@
     "umdModuleIds": {
       "sweetalert2": "Swal",
       "firebase/app" : "app",
-      "uuid": "uuid"
+      "uuid": "uuid",
+      "angular-password-strength-meter": "angularPasswordStrengthMeter"
     }
   }
 }
