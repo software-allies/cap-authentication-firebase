@@ -102,6 +102,14 @@ export class AuthenticationService {
     return this.afAuth.auth.sendPasswordResetEmail(email);
   }
 
+  handleResetPassword(actionCode: string) {
+    return this.afAuth.auth.verifyPasswordResetCode(actionCode);
+  }
+
+  ResetPassword(Code: string, password: string) {
+    return this.afAuth.auth.confirmPasswordReset(Code, password);
+  }
+
   verifyEmail(): Promise<void> {
     return this.afAuth.auth.currentUser.sendEmailVerification();
   }
