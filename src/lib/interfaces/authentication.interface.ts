@@ -30,6 +30,6 @@ export interface UserData {
   password: string;
   firstName: string;
   lastName: string;
-  company: string;
+  company?: string;
   profile?: string;
 }
