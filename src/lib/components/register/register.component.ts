@@ -26,7 +26,7 @@ import { Register, RegisterJWT } from '../../interfaces/authentication.interface
             }"
             formControlName="email"
             aria-describedby="emailHelp"/>
-          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          <small *ngIf="emailText" id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
           <small *ngIf="!createUserForm.get('email').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
             Required field
           </small>
@@ -53,6 +53,24 @@ import { Register, RegisterJWT } from '../../interfaces/authentication.interface
               Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
             </small>
             <small *ngIf="!createUserForm.get('password').valid && validatedForm" [ngStyle]="{'color':'#dc3545'}" class="form-text">
+              Required field
+            </small>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Confirm Password <span>*</span></label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            formControlName="confirmPassword"
+            [ngClass]="{
+              'invalidField':
+                (!createUserForm.get('confirmPassword').valid && createUserForm.get('confirmPassword').touched)
+                || (validatedForm && !createUserForm.get('confirmPassword').valid),
+              'is-valid': createUserForm.get('password').valid && passwordConfirming()
+            }"/>
+            <small *ngIf="!createUserForm.get('confirmPassword').valid && validatedForm"[ngStyle]="{'color':'#dc3545'}" class="form-text">
               Required field
             </small>
         </div>
@@ -112,19 +130,20 @@ import { Register, RegisterJWT } from '../../interfaces/authentication.interface
           </small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="companyInput">
           <label for="text">Company</label>
           <input  type="text"
                   class="form-control"
                   formControlName="company"/>
         </div>
-
         <div *ngIf="existingUser"  class="form-control-feeback text-danger text-center">
           An Account with this username already exists.
         </div>
+        <div *ngIf="confirmationPassword"  class="form-control-feeback text-danger text-center">
+          Passwords don't match.
+        </div>
 
         <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-
         <!--
         <button (click)="signUpSocialMedia(false)" type="button" class="btn btnGoogle btn-block">Google</button>
         <button (click)="signUpSocialMedia(true)" type="button" class="btn btn-primary btn-block">Facebook</button>
@@ -184,11 +203,13 @@ export class AuthRegisterComponent implements OnInit {
   existingUser: boolean;
   socialMedia: boolean;
   validatedForm: boolean;
+  confirmationPassword: boolean;
 
   @Input() redirectTo?: string = '/';
+  @Input() emailText? : boolean = true;
+  @Input() companyInput? : boolean = true;
   @Input() profileType?: boolean = false;
   @Input() profileTypeArray?: string[] = ['Company', 'Student', 'University'];
-
   @Output() userRegisterData = new EventEmitter<Register>();
   @Output() userRegisterJWT = new EventEmitter<RegisterJWT>();
   @Output() userRegisterError = new EventEmitter();
@@ -200,6 +221,7 @@ export class AuthRegisterComponent implements OnInit {
     this.existingUser = false;
     this.socialMedia = false;
     this.validatedForm = false;
+    this.confirmationPassword = false;
   }
 
   ngOnInit() {
@@ -210,12 +232,15 @@ export class AuthRegisterComponent implements OnInit {
         Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')
       ]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
       firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      company: new FormControl('')
+      lastName: new FormControl('', [Validators.required, Validators.minLength(2)])
     });
     if (this.profileType) {
       this.createUserForm.addControl('profile', new FormControl('', Validators.required));
+    }
+    if (this.companyInput) {
+      this.createUserForm.addControl('company', new FormControl('', Validators.required));
     }
   }
 
@@ -229,31 +254,44 @@ export class AuthRegisterComponent implements OnInit {
     };
   }*/
 
+  passwordConfirming(): boolean {
+    if (this.createUserForm.get('password').value === this.createUserForm.get('confirmPassword').value) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   createUser() {
     if (this.createUserForm.valid) {
-      this.authenticationService.createUser(this.createUserForm.value)
-      .then((response: any) => {
-        this.userRegisterData.emit({
-          userData: this.createUserForm.value,
-          response
-        });
-        response.user.getIdTokenResult().then((res: any) => {
-          this.authenticationService.saveCurrentUSer({
-            user: response.user.email.split('@', 1)[0],
-            email: response.user.email,
-            refresh_token: response.user.refreshToken,
-            token: res.token,
-            exp: Date.parse(res.expirationTime),
+      if (this.passwordConfirming()) {
+        this.confirmationPassword = false;
+        this.authenticationService.createUser(this.createUserForm.value)
+        .then((response: any) => {
+          this.userRegisterData.emit({
+            userData: this.createUserForm.value,
+            response
           });
-          this.userRegisterJWT.emit(res);
-          this.authenticationService.createUserDB(this.createUserForm.value, res.token, res.claims.user_id);
-        }).then(() => {
-          response.user.sendEmailVerification().then(() => this.router.navigate([`${this.redirectTo}`]));
+          response.user.getIdTokenResult().then((res: any) => {
+            this.authenticationService.saveCurrentUSer({
+              user: response.user.email.split('@', 1)[0],
+              email: response.user.email,
+              refresh_token: response.user.refreshToken,
+              token: res.token,
+              exp: Date.parse(res.expirationTime),
+            });
+            this.userRegisterJWT.emit(res);
+            this.authenticationService.createUserDB(this.createUserForm.value, res.token, res.claims.user_id);
+          }).then(() => {
+            response.user.sendEmailVerification().then(() => this.router.navigate([`${this.redirectTo}`]));
+          });
+        }).catch((error) => {
+          this.existingUser = true;
+          this.userRegisterError.emit(error);
         });
-      }).catch((error) => {
-        this.existingUser = true;
-        this.userRegisterError.emit(error);
-      });
+      } else {
+        this.confirmationPassword = true;
+      }
     } else {
       this.validatedForm = true;
     }
