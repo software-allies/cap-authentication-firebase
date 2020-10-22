@@ -22,9 +22,10 @@ import { Router } from '@angular/router';
           formControlName="email"
           aria-describedby="emailHelp"
         />
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        <small *ngIf="!loginUserForm.get('email').valid && validatedForm"[ngStyle]="{'color':'#dc3545'}" class="form-text">
+          Required field
+        </small>
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
         <input
@@ -36,7 +37,9 @@ import { Router } from '@angular/router';
             || (validatedForm && !loginUserForm.get('password').valid)}"
           formControlName="password"
         />
-
+        <small *ngIf="!loginUserForm.get('password').valid && validatedForm"[ngStyle]="{'color':'#dc3545'}" class="form-text">
+          Required field
+        </small>
         <small
           *ngIf="!loginUserForm.get('password').valid && loginUserForm.get('password').touched"
           class="form-text text-center text-muted"
