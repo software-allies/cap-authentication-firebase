@@ -23,7 +23,7 @@ export class AuthenticationService {
     @Inject(PLATFORM_ID) private platformId
   ) {
     this.user = this.afAuth.authState;
-    this.stateService.setState('isLogged', this.isUserLoggedIn());
+    // this.stateService.setState('isLogged', this.isUserLoggedIn());
   }
 
   get authenticated(): boolean {
