@@ -23,7 +23,7 @@ export class AuthenticationService {
     @Inject(PLATFORM_ID) private platformId
   ) {
     this.user = this.afAuth.authState;
-    // this.stateService.setState('isLogged', this.isUserLoggedIn());
+    this.stateService.setState('isLogged', this.isUserLoggedIn());
   }
 
   get authenticated(): boolean {
@@ -169,8 +169,11 @@ export class AuthenticationService {
   }
 
   getUserFromAPI(id: string) {
-    if (this.configService.endPoint) {
-      const url = `${this.configService.endPoint}/findOne?filter={"where":{"ExternalId":"${id}"}}`;
+    if (this.ApiToConsult()) {
+      let filter = {
+        where: {ExternalId:id},
+      };
+      const url = `${this.configService.endPoint}?filter=${JSON.stringify(filter)}`;
       const httpOptions = {
         headers : new HttpHeaders({
           'Content-Type': 'application/json',
