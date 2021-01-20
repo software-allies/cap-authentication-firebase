@@ -21,7 +21,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
             'invalidField':
               (!resetPassword.get('password').valid && resetPassword.get('password').touched)
               || (validatedForm && !resetPassword.get('password').valid),
-            'is-valid':createUserForm.get('password').valid
+            'is-valid':resetPassword.get('password').valid
           }"
           formControlName="password"
           aria-describedby="emailHelp"
