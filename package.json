@@ -1,6 +1,6 @@
 {
   "name": "cap-authentication-firebase",
-  "version": "1.0.39",
+  "version": "1.2.0",
   "description": "Angular module to authenticate users in your application using Firebase-Authentication",
   "scripts": {
     "packagr": "ng-packagr -p ng-package.json"
@@ -26,9 +26,9 @@
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",
-    "@angular/fire": "^5.2.1",
+    "@angular/fire": "6.0.1",
     "angular-password-strength-meter": "2.0.0",
-    "firebase": "^7.2.3",
+    "firebase": "^7.0.0",
     "bootstrap": "^4.4.1",
     "uuid": "^3.3.3",
     "sweetalert2": "^9.5.3",

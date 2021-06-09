@@ -352,7 +352,7 @@ export class AuthProfileComponent implements OnInit {
 
   editProfile() {
     if (this.profileUserForm.valid) {
-      this.authenticationService.updateProfileFromAPI(this.userDB.id, this.profileUserForm.value).subscribe((userupdated: any) => {
+      this.authenticationService.updateProfileFromAPI(this.userDB.SACAP__UUID__c, this.profileUserForm.value).subscribe((userupdated: any) => {
         this.userProfileDataBaseUpdate.emit(userupdated);
         this.userDB.Company = this.profileUserForm.controls['company'].value;
         this.userDB.FirstName = this.profileUserForm.controls['firstname'].value;

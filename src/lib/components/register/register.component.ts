@@ -240,19 +240,9 @@ export class AuthRegisterComponent implements OnInit {
       this.createUserForm.addControl('profile', new FormControl('', Validators.required));
     }
     if (this.companyInput) {
-      this.createUserForm.addControl('company', new FormControl('', Validators.required));
+      this.createUserForm.addControl('company', new FormControl(''));
     }
   }
-
-  /*capitalLetter(control: FormControl): { [s: string]: boolean } {
-    const letterAscii = control.value.charCodeAt(0);
-    if (control.value && letterAscii > 64 && letterAscii < 91) {
-      return null;
-    }
-    return {
-      capitalLetter: true
-    };
-  }*/
 
   passwordConfirming(): boolean {
     if (this.createUserForm.get('password').value === this.createUserForm.get('confirmPassword').value) {
@@ -288,6 +278,7 @@ export class AuthRegisterComponent implements OnInit {
         }).catch((error) => {
           this.existingUser = true;
           this.userRegisterError.emit(error);
+          setTimeout(() => this.existingUser = true, 3000);
         });
       } else {
         this.confirmationPassword = true;

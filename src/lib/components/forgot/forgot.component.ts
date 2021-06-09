@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: "cap-forgot-firebase",
   template: `
-  <div class="box">
+<div class="box">
   <div>
     <form [formGroup]="changeform" (ngSubmit)="forgorPassword()">
       <div class="form-group">
@@ -15,9 +15,6 @@ import { Router } from '@angular/router';
         </label>
         <label for="email" *ngIf="emailSend" class="col-12  text-center col-form-label">
           An e-mail was sent to your email address that you provided, there you can change your password.
-        </label>
-        <label for="email" *ngIf="errorEmailSend" class="col-12 text-danger text-center col-form-label">
-          an error occurred with the server when checking your email, try again later.
         </label>
         <input *ngIf="!emailSend"
           [ngClass]="{
@@ -29,8 +26,9 @@ import { Router } from '@angular/router';
           email
           placeholder="Email address *"
           formControlName="email">
-        <small id="passwordHelpBlock" class="form-text text-center text-muted">
-        </small>
+        <label for="email" *ngIf="errorEmailSend && !emailSend" class="col-12 text-danger text-center col-form-label">
+          an error occurred with the server when checking your email, try again later.
+        </label>
       </div>
       <button *ngIf="!emailSend" type="submit" class="btn btn-primary btn-block">Send Email</button>
       <button *ngIf="emailSend" type="button" (click)="goToHome()" class="btn btn-secondary btn-block">Go to Home</button>
